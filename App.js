@@ -1,48 +1,68 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Button, TextInput, Text, FlatList } from 'react-native';
+import { StyleSheet, View, Button, TextInput, Text, Alert } from 'react-native';
+
+let randomNumber = Math.floor(Math.random() * 100) + 1;
 
 export default function App() {
-  const[text, setText] = useState('');
-  const[data, setData] = useState([]);
-
-  const add = () => {
-    setData([...data, {key:text }]);
-    setText('');
+  const [guessed, onChangeGuessed] = React.useState(null);
+  const [text, onChangeText] = React.useState('');
+  const [tulos, setTulos] = React.useState(null);
+  const [lkm, setLkm] = React.useState(1);
+  
+  const compare = () => {
+    if (randomNumber < guessed) {
+      setLkm(parseInt(lkm) + 1)
+      onChangeText("Your number is too big")
+      onChangeGuessed(null)
+    } else if (randomNumber > guessed) {
+      setLkm(parseInt(lkm) + 1)
+      onChangeText("Your number is too low")
+      onChangeGuessed(null)
+    } else if (randomNumber == guessed) {
+      setLkm(parseInt(lkm) + 1)
+      Alert.alert("You guessed the number in " + lkm + " guesses");
+      onChangeGuessed(null)
+      setLkm(1)
+      onChangeText('')
+    }
   }
 
-  return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        onChangeText={text => setText(text)}
-        value={text}
-        keyboardType="default"
-      />
-      <View style={styles.button}>
-        <Button 
-          style={styles.button}
-          onPress={add} 
-          title="ADD"
-        />
-        <Button 
-          style={styles.button}
-          onPress={data => setData([])} 
-          title="CLEAR"
-        />
-      </View>
-      <Text style={{color: 'blue', fontWeight: 'bold'}}>
-        Shopping List
-      </Text>
-      
-      <FlatList
-        data={data}
-        renderItem={({item}) =>
+  while (tulos != 1){
+    if (tulos == 1) {
+      return (
+        <Text>
+          Guess a number between 1-100
+        </Text>
+      );
+    } else {
+      return (
+        <View style={styles.container}>
           <Text>
-            {item.key}
-          </Text>}
-      />
-    </View>
-  );
+            Guess a number between 1-100
+          </Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={guessed => onChangeGuessed(guessed)}
+            value={guessed}
+            keyboardType="numeric"
+          />
+          <Button 
+              style={styles.button}
+              onPress={compare} 
+              title="MAKE GUESS"
+          />
+          <View
+            style={{
+              margin: 10
+            }}
+          />
+          <Text>
+            {text}
+          </Text>
+        </View>
+      );
+    }
+  }
 }
 
 const styles = StyleSheet.create({
@@ -51,7 +71,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
   },
   input: {
     width: 200,
@@ -65,6 +86,6 @@ const styles = StyleSheet.create({
     margin: 30,
     width: 100,
   }
+  
 });
-
 
